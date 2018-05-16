@@ -25,3 +25,17 @@
   roles:
     - finalize_image
 
+- name: Convert image for target
+  hosts: all
+  remote_user: root
+
+  roles: 
+    - convert
+
+- name: Deploy to Cloud
+  hosts: all
+  remote_user: root
+
+  roles:
+    - deploy
+

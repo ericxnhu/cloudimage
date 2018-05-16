@@ -14,7 +14,7 @@
 
 # if the OS version is < RHEL7.2
 - name: Convert 7.1 or earlier image to raw
-  command: qemu-img convert -f {{ src_image_type }} -o subformat=fixed -O vpc {{ src_image }} {{ raw_image }}
+  command: qemu-img convert -f {{ src_image_type }} -O raw {{ src_image }} {{ raw_image }}
   when: target_os_ver < 7.2
 
 - name: Determine the proper size for new image
@@ -31,7 +31,7 @@
   when: target_os_ver < 7.2 and ansible_env.ROUNDED_SIZE <> 0
 
 - name: convert the raw image to vhd
-  command: qemu-img convert -f raw -o subformat=fixed -O vpc {{ raw_image }} {{ vhd_image }}
+  command: qemu-img convert -f raw -o {{ tgt_options }}  -O {{ tgt_format }}  {{ raw_image }} {{ vhd_image }}
   when: target_os_ver < 7.2
 	
 # For RHEL images 7.2 or greater they are already on 1MB boundaries
@@ -39,5 +39,5 @@
 # qemu-img convert -f qcow2 -o subformat=fixed -O vpc <rhel-guest-image-7.2-xxx.qcow2> <rhel-guest-image-7.2-xxx.vhd>
 
 - name: convert the image directly to vhd format
-  command: qemu-img convert -f {{ src_image_type }} -o subformat=fixed -O vpc {{ src_image }} {{ vhd_image }}
+  command: qemu-img convert -f {{ src_image_type }} -o {{ tgt_options }} -O {{ tgt_format }} {{ src_image }} {{ vhd_image }}
 	
