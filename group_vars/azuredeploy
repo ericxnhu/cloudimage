@@ -1,0 +1,18 @@
+---
+# These variables will typically be passed in to the Tower template 
+# Tower template items will override anything here
+
+# These elements are defined by azure and proper values must be obtained from your account
+# we will use canadaeast (montreal) or canadacentral (toronto)
+az_azure_region: canadacentral
+
+# These elements need to exist to run the deploy successfully today
+# The requirement might change should we decide to create the group on the fly
+az_resource_group: my_az_resource_group
+az_storage_account_name: my_az_storage_account_name
+
+# These elements get created during the deployment
+az_storage_container: my_az_storage_container
+vhd_src_image: local_path_on_builder_to_image
+vhd_blob_image: what_we_will_name_the_blob
+az_gold_image: name_of_gold_image

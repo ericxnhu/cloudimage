@@ -1,0 +1,10 @@
+---
+# this playbook will run all the common tasks for systems that will be 
+# converted to images for the cloud.
+ 
+- name: update the system
+  command: yum clean all
+  
+- yum:
+    name: *
+    state: latest  

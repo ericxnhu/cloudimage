@@ -1,0 +1,7 @@
+---
+# vars for common elements for all RHEL environments
+
+network_filespec: /etc/sysconfig/network
+hostname: localhost.localdomain
+ifcfg_eth0: /etc/sysconfig/network-scripts/ifcfg-eth0
+

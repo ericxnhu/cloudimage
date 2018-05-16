@@ -1,0 +1,9 @@
+# grub template managed by ansible.
+
+GRUB_TIMEOUT=5
+GRUB_DISTRIBUTOR="$(sed 's, release .*$,,g' /etc/system-release)"
+GRUB_DEFAULT=saved
+GRUB_DISABLE_SUBMENU=true
+GRUB_TERMINAL_OUTPUT="console"
+GRUB_CMDLINE_LINUX="splash=quiet nofb rootdelay=300 console=ttyS0 earlyprintk=ttyS0"
+GRUB_DISABLE_RECOVERY="true"

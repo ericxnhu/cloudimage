@@ -1,0 +1,27 @@
+---
+# Did you set your variables correctly?
+# 
+
+# This playbook configures vm images for cloud deployment.  
+
+- name: Apply Common configuration to all nodes
+  hosts: all
+  remote_user: root
+
+  roles:
+    - common
+
+- name: Anonymize the system
+  hosts: azure
+  remote_user: root
+
+  roles:
+    - azure
+
+- name: Apply finalization configuration to all nodes
+  hosts: all
+  remote_user: root
+
+  roles:
+    - finalize_image
+

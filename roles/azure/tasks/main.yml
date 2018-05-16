@@ -1,0 +1,66 @@
+---
+# this playbook runs all the commands that are unique to configuring 
+# an image that will be compatible with azure
+
+- name: create the waagent directory
+  file:
+    path: /var/lib/waagent
+    state: directory
+    mode: 0700
+
+- name: move the udev rules
+  copy:
+    remote_src: true
+    src: /lib/udev/rules.d/75-persistent-net-generator.rules
+    dest: /var/lib/waagent/
+
+- copy:
+    remote_src: true
+    src: /etc/udev/rules.d/70-persistent-net.rules 
+    dest: /var/lib/waagent/
+
+- name: Install required python libraries
+  yum: 
+    name: python-pyasn1
+    state: present
+
+- name: copy the waagent to the target vm
+  copy: 
+    src: '{{ waagent }}'
+    dest: /usr/bin/
+    mode: 0755
+    
+- name: install the waagent
+  command: /usr/sbin/waagent -install -verbose -force
+  
+- name: enable the waagent
+  service:
+    name: waagent
+    enabled: yes
+    state: stopped
+
+- name: configure waagent
+  template:
+    src: waagent.conf.j2
+    dest: '{{ waagent_conf }}'
+    
+- name: start the waagent
+  service:
+    name: waagent
+    enabled: yes
+    state: started
+
+- name: Update grub configuration for azure boot
+  template:
+    src: grub.j2
+    dest: '{{ grub_conf }}'
+    
+- name: Rebuild the boot loader
+  command: grub2-mkconfig -o '{{ grub_cfg }}'
+
+- name: deprovision the waagent
+  command: waagent -force -deprovision
+
+- name: clean up the history
+  command: export HISTSIZE=0
+

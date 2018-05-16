@@ -1,0 +1,6 @@
+waagent_url: http://sat6.parmstro.redhat.com/pub/waagent
+waagent: waagent
+waagent_conf: /etc/waagent.conf
+swap_size: 2048
+grub_conf: /etc/default/grub
+grub_cfg: /boot/grub2/grub.cfg

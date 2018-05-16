@@ -1,0 +1,19 @@
+---
+# Variables for converting and azure image
+# typically these will be set in the Tower template used to run the playbooks
+
+# src_image_type allowable values: 
+# vvfat vpc vmdk vhdx vdi ssh sheepdog rbd raw host_cdrom host_floppy host_device file qed 
+# qcow2 qcow parallels nbd iscsi gluster dmg tftp ftps ftp https http cloop bochs blkverify blkdebug
+
+# It is guessed automatically in most cases
+src_image_type: qcow2
+
+# The path to the image to be converted
+src_img: /the/path/to/the/vm/image.qcow2
+
+# The path to the intermediate raw file
+raw_image: /the/path/to/the/vm/intermediate_image.raw
+
+# The path to the finished vhd image file that will be uploaded
+vhd_image: /the/path/to/the/vm/converted_image.vhd

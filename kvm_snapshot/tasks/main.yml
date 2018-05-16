@@ -1,0 +1,11 @@
+---
+# tasks file for kvm_snapshot
+#
+# The machine should have just been built
+# We should stop the machine to get a consistent snap
+# But we won't for now...
+#
+
+- name: snap the virtual machine
+  command: virsh snapshot-create {{ kvmGuestName }}
+

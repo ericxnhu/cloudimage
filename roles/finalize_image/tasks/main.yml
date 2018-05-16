@@ -1,0 +1,20 @@
+---
+# Put all finalization code here
+#
+
+- name: unregister from satellite
+  command: subscription-manager unregister
+
+- name: unregister from idm
+  command: ipa-client-install --uninstall --unattended
+
+- name: update network file
+  template: src=network.j2 dest={{ network_filespec }}
+  tags: network
+
+- name: set the hostname
+  command: hostnamectl set-hostname {{ host_name }}
+
+- name: create a generic eth0
+  template: source=ifcfg-eth0.j2 dest={{ ifcfg_eth0 }}
+

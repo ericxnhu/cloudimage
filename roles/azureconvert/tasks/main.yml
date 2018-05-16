@@ -1,0 +1,43 @@
+---
+# this playbook performs the conversion of a KVM image
+# to an Azure style image
+
+# use the name of the system to determine the domain
+# use the domain to determine the file image
+# use the information OS version
+# OR just pass all these variables in through Tower and use the API to set them when you call Tower
+#
+- name: shutdown the target domain
+  virt: 
+    command: shutdown
+    name: "{{ kvmGuestName }}"
+
+# if the OS version is < RHEL7.2
+- name: Convert 7.1 or earlier image to raw
+  command: qemu-img convert -f {{ src_image_type }} -o subformat=fixed -O vpc {{ src_image }} {{ raw_image }}
+  when: target_os_ver < 7.2
+
+- name: Determine the proper size for new image
+  copy:
+    src: roundedsize.sh
+    dest: /tmp/roundedsize.sh
+  when: target_os_ver < 7.2
+	
+- command: /tmp/roundedsize.sh {{ raw_image }}
+  when: target_os_ver < 7.2
+
+- name: Resize the image if required
+  command: qemu-img resize -f raw {{ raw_image }} {{ ansible_env.ROUNDED_SIZE }}
+  when: target_os_ver < 7.2 and ansible_env.ROUNDED_SIZE <> 0
+
+- name: convert the raw image to vhd
+  command: qemu-img convert -f raw -o subformat=fixed -O vpc {{ raw_image }} {{ vhd_image }}
+  when: target_os_ver < 7.2
+	
+# For RHEL images 7.2 or greater they are already on 1MB boundaries
+# so we can convert the image directly to vhd
+# qemu-img convert -f qcow2 -o subformat=fixed -O vpc <rhel-guest-image-7.2-xxx.qcow2> <rhel-guest-image-7.2-xxx.vhd>
+
+- name: convert the image directly to vhd format
+  command: qemu-img convert -f {{ src_image_type }} -o subformat=fixed -O vpc {{ src_image }} {{ vhd_image }}
+	

@@ -1,0 +1,36 @@
+---
+# this playbook will execute the upload of the converted image file to azure
+	
+# we need to have our cloud cred set up for Tower
+# we will be copying the image as a resource manager image
+# the end result will be an image that we can create an instance from in Azure
+	
+# From the dox we need to do the following. Many of these things can reasonably be expected to exist.
+# login to azure. This is easily handled by ansible
+# Get the storage account connection string and export it as an environment var. We are going to assume a storage account exists and not create one.
+# for now we will assume an existing resource group and known region in azure
+# create a storage container
+
+- name: Create a storage container and upload the image as a blob
+  azure_rm_storageblob:
+    resource_group: '{{ az_resource_group }}'
+    storage_account_name: '{{ az_storage_account_name }}'
+    container: '{{ az_storage_container }}'
+    blob: '{{ vhd_blob_image }}'
+    src: '{{ vhd_src_image }}'
+    public_access: container
+    content_type: 'page'
+		
+# get the url from the blob
+- name: Get the url to create the gold image from
+  command: az storage blob url -c {{ az_storage_container }} -n {{ vhd_image }}
+  register: container_url
+  
+
+# create the Azure custom image from the blob
+# az image create -n <gold-image-name> -g <resource-group> -l <azure-region> --source <URL> --os-type linux
+
+- name: Create the custom image from the blob
+  command: az image create -n {{ az_gold_image }} -g {{ az_resource_group }} -l {{ az_azure_region }} --source {{ container_url }} --os-type linux
+
+# End of play

@@ -1,0 +1,7 @@
+---
+- name: revert the snap on the target guest
+  hosts: cloudbuilder.parmstrong.ca
+  remote_user: root
+  
+  roles:
+    - kvm_snapshot_rollback

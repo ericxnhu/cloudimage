@@ -1,0 +1,12 @@
+---
+# tasks file for kvm_snapshot_rollback
+#
+# Roll back the snapshot and delete it to prepare for new snapshot
+#
+- name: rollback to the current snapshot
+  command: virsh snapshot-revert --current --running {{ kvmGuestName }}
+
+- name: delete the current snapshot and any children so we end up at a known state
+  command: virsh snapshot-delete --current --children {{ kvmGuestName }}
+
+# end of play
